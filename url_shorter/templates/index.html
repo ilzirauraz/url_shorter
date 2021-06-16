@@ -1,0 +1,93 @@
+{% load static %}
+<html lang="ru">
+
+  <head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+    <link rel="stylesheet" href= "{% static 'css/templatemo-breezed.css' %}">
+    </head>
+    <body>
+
+    
+    <section class="section" id="subscribe">
+        <div class="container">
+            <div class="row">
+                <div class="col-lg-8 offset-lg-2">
+                    <div class="section-heading">
+                        <h2>Сокращатель URL-адресов</h2>
+                    </div>
+                    <div class="subscribe-content">
+                        <p>Вы просто вводите необходимый длинный URL в поле ввода и получаете его короткий аналог.</p>
+                        <div class="subscribe-form">
+                            <form id="subscribe-now" action="{% url 'shortenurl' %}" method="post", name="url">
+                              {% csrf_token %}
+                                <div class="row">
+                                      <div class="col-md-8 col-sm-12">
+                                        <fieldset>
+                                        {% if not shortened_link %}                                        
+                                          <input name="url" type="text" placeholder="Введите ссылку" required="">
+                                        {% else %}
+                                          <input name="url" type="text" value="{{ shortened_link }}" required="">
+                                        {% endif %}
+                                        
+                                          <input name="subpart" type="text" style="margin-top: 10px; width:300px;" placeholder="Введите свой хеш для сокращенной ссылки">
+                                        {% if exception %}
+                                          <p style="text-align:left; color:red">{{ exception }}</p>
+                                        {% endif %}
+                                        </fieldset>
+                                      </div>
+                                      <div class="col-md-4 col-sm-12">
+                                        <fieldset>
+                                        {% if not shortened_link %}
+                                          <button type="submit" id="form-submit" class="main-button">Сократить</button>
+                                        {% else %}
+                                          <button type="submit" id="form-submit" class="main-button">Копировать</button>
+                                        {% endif %}
+                                        </fieldset>
+                                      </div>
+                                </div>
+                            </form>
+                              <div>
+                               {% if shorten_links %}
+                                <table class="table", style="margin-top: 10px;">
+                                <thead>
+                                  <tr>
+                                    <th scope="col">Original URL</th>
+                                    <th scope="col">Shorten URL</th>
+                                  </tr>
+                                  {% for sl in page_obj %}
+                                    <tr>
+                                      <td>{{ sl.original_link }}</td>
+                                      <td>{{ sl.subpart }}</td>
+                                    </tr>
+                                                                
+                                  {% endfor %}
+                                </table>
+                                {% endif %}
+                              <div class="pagination">
+                                  <span class="step-links">
+                                      {% if page_obj.has_previous %}
+                                          <a href="?page=1">&laquo; first</a>
+                                          <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+                                      {% endif %}
+                                      <span class="current">
+                                          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+                                      </span>
+                                      {% if page_obj.has_next %}
+                                          <a href="?page={{ page_obj.next_page_number }}">next</a>
+                                          <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+                                      {% endif %}
+                                  </span>
+                              </div>
+                              </div>
+                                </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+  </body>
+</html>
